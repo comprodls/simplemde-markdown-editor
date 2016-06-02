@@ -24,6 +24,7 @@ var bindings = {
 	"toggleHeadingSmaller": toggleHeadingSmaller,
 	"toggleHeadingBigger": toggleHeadingBigger,
 	"drawImage": drawImage,
+	"embedVideo": embedVideo,
 	"toggleBlockquote": toggleBlockquote,
 	"toggleOrderedList": toggleOrderedList,
 	"toggleUnorderedList": toggleUnorderedList,
@@ -50,6 +51,7 @@ var shortcuts = {
 	"toggleHeadingBigger": "Shift-Cmd-H",
 	"cleanBlock": "Cmd-E",
 	"drawImage": "Cmd-Alt-I",
+	"embedVideo": "Cmd-Alt-V",
 	"toggleBlockquote": "Cmd-'",
 	"toggleOrderedList": "Cmd-Alt-L",
 	"toggleUnorderedList": "Cmd-L",
@@ -170,6 +172,7 @@ function getState(cm, pos) {
 			ret.link = true;
 		} else if(data === "tag") {
 			ret.image = true;
+			ret.video = true;
 		} else if(data.match(/^header(\-[1-6])?$/)) {
 			ret[data.replace("header", "heading")] = true;
 		}
@@ -641,6 +644,23 @@ function drawImage(editor) {
 		}
 	}
 	_replaceSelection(cm, stat.image, options.insertTexts.image, url);
+}
+
+/**
+ * Action for drawing a video.
+ */
+function embedVideo(editor) {
+	var cm = editor.codemirror;
+	var stat = getState(cm);
+	var options = editor.options;
+	var url = "http://";
+	if(options.promptURLs) {
+		url = prompt(options.promptTexts.video);
+		if(!url) {
+			return false;
+		}
+	}
+	_replaceSelection(cm, stat.video, options.insertTexts.video, url);
 }
 
 /**
@@ -1127,7 +1147,8 @@ var toolbarBuiltInButtons = {
 		name: "code",
 		action: toggleCodeBlock,
 		className: "fa fa-code",
-		title: "Code"
+		title: "Code",
+		default: true
 	},
 	"quote": {
 		name: "quote",
@@ -1171,6 +1192,13 @@ var toolbarBuiltInButtons = {
 		action: drawImage,
 		className: "fa fa-picture-o",
 		title: "Insert Image",
+		default: true
+	},
+	"video-youtube": {
+		name: "video-youtube",
+		action: embedVideo,
+		className: "fa fa-youtube",
+		title: "Embed Youtube Video",
 		default: true
 	},
 	"table": {
@@ -1239,13 +1267,15 @@ var toolbarBuiltInButtons = {
 var insertTexts = {
 	link: ["[", "](#url#)"],
 	image: ["![", "](#url#)"],
+	video: ["{video-youtube} http://", ""],
 	table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n"],
 	horizontalRule: ["", "\n\n-----\n\n"]
 };
 
 var promptTexts = {
 	link: "URL for the link:",
-	image: "URL of the image:"
+	image: "URL of the image:",
+	video: "URL of the video"
 };
 
 var blockStyles = {
@@ -1879,6 +1909,7 @@ SimpleMDE.toggleOrderedList = toggleOrderedList;
 SimpleMDE.cleanBlock = cleanBlock;
 SimpleMDE.drawLink = drawLink;
 SimpleMDE.drawImage = drawImage;
+SimpleMDE.embedVideo = embedVideo;
 SimpleMDE.drawTable = drawTable;
 SimpleMDE.drawHorizontalRule = drawHorizontalRule;
 SimpleMDE.undo = undo;
@@ -1934,6 +1965,9 @@ SimpleMDE.prototype.drawLink = function() {
 };
 SimpleMDE.prototype.drawImage = function() {
 	drawImage(this);
+};
+SimpleMDE.prototype.embedVideo = function() {
+	embedVideo(this);
 };
 SimpleMDE.prototype.drawTable = function() {
 	drawTable(this);

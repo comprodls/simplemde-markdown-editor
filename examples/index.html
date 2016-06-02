@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+	<meta charset="UTF-8">
+	<title>JavaScript Markdown Editor - SimpleMDE</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<style>
+	.editor-preview h1,
+	.editor-preview h2,
+	.editor-preview h3,
+	.editor-preview h4,
+	.editor-preview h5{
+		margin-bottom:10px;
+	}
+	
+	.editor-preview h1{
+		border-bottom:1px solid #ddd;
+	}
+	
+	.editor-preview h1{
+		border-bottom:1px solid #eee;
+	}
+	.project-name{
+	    font-size: 200%;
+	    text-align: center;
+    }
+	</style>
+  </head>
+  <body>
+	<section class="page-header">
+	  <h1 class="project-name">SimpleMDE Markdown Editor Demo</h1>
+	</section>
+
+	<section class="main-content">
+	  
+	<textarea id="demo1"></textarea>
+
+	</section>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+	<link rel="stylesheet" href="../dist/simplemde.min.css">
+	<script src="../dist/simplemde.min.js"></script>
+	
+	<script>
+
+	var simplemde = new SimpleMDE({
+						element: document.getElementById("demo1"),
+						spellChecker: false,
+						hideIcons: ["guide"],
+					});
+	simplemde.value("# This text will appear in the editor");
+	</script>
+
+  </body>
+</html>
